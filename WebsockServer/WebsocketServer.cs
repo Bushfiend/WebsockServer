@@ -61,22 +61,31 @@ namespace WebsockServer
 
             while (!cancellationToken.Token.IsCancellationRequested)
             {
-                var context = await listener.GetContextAsync();
-                if (context.Request.IsWebSocketRequest)
+                try
                 {
-                    ProcessWebSocketRequest(context);
+                    var context = await listener.GetContextAsync();
+                    if (context.Request.IsWebSocketRequest)
+                    {
+                        ProcessWebSocketRequest(context);
 
-                    if(_verbose)
-                        ConsoleWrite($"Client connected from {context.Request.RemoteEndPoint}");
+                        if (_verbose)
+                            ConsoleWrite($"Client connected from {context.Request.RemoteEndPoint}");
+                    }
+                    else
+                    {
+                        if (_verbose)
+                            ConsoleWrite($"Client failed to connect. Status code: {context.Response.StatusCode}");
+
+                        context.Response.StatusCode = 400;
+                        context.Response.Close();
+                    }
                 }
-                else
+                catch(Exception ex)
                 {
-                    if (_verbose)
-                        ConsoleWrite($"Client failed to connect. Status code: {context.Response.StatusCode}");
-
-                    context.Response.StatusCode = 400;
-                    context.Response.Close();
+                    ConsoleWrite($"Error: {ex}");
+                    listener.Stop();
                 }
+                
             }
         }
 
