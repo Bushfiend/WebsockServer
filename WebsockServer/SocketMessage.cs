@@ -15,7 +15,7 @@ namespace WebsockServer
         public string EventName { get; private set; }
         public string Message { get; private set; }
 
-        public SocketMessage(CommandType command, string eventName, string message)
+        public SocketMessage(CommandType command, string eventName, string message = "Null")
         {
             Command = command;
             EventName = eventName;

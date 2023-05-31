@@ -92,9 +92,9 @@ namespace WebsockServer
                 {
                     await HandleWebSocketConnection(webSocket);
                 }
-                catch (WebSocketException ex)
+                catch
                 {
-                    ConsoleWrite($"Client Disconnected.");
+                    ConsoleWrite($"Client disconnected.");
                 }
                 finally
                 {
@@ -115,13 +115,13 @@ namespace WebsockServer
                 return;
             }
 
-            foreach (var eventName in eventSubscriptions)
+            foreach (var eventSub in eventSubscriptions)
             {
-               if(eventName.Value.Contains(client))
+               if(eventSub.Value.Contains(client))
                 {
-                    eventName.Value.Remove(client);
+                    eventSub.Value.Remove(client);
                     if(_verbose)
-                        ConsoleWrite($"Client disconnected.");
+                        ConsoleWrite($"Client unsubscribed to '{eventSub.Key}'.");
                 }        
             }
         }
@@ -137,9 +137,7 @@ namespace WebsockServer
                     var data = Encoding.UTF8.GetString(buffer, 0, receiveResult.Count);
 
                     var socketMessage = SocketMessage.Deserialize(data);
-
-                    ConsoleWrite("Received message: " + socketMessage.Message);
-
+                  
                     switch (socketMessage.Command)
                     {
                         case SocketMessage.CommandType.Subscribe:
@@ -148,9 +146,10 @@ namespace WebsockServer
                         case SocketMessage.CommandType.Unsubscribe:
                             UnsubscribeFromEvent(client, socketMessage.EventName);
                             break;
-                        case SocketMessage.CommandType.SendMessage:
-                            await HandleEventMessage(client, socketMessage.Message, socketMessage.EventName);
+                        default:
+                        await HandleEventMessage(client, socketMessage.EventName, socketMessage.Message);
                             break;
+                            
                     }
                 }
                 else if (receiveResult.MessageType == WebSocketMessageType.Close)
@@ -177,7 +176,9 @@ namespace WebsockServer
                 if (subscribers == null)
                     return;
 
-                var buffer = Encoding.UTF8.GetBytes(message);
+                var socketMessage = new SocketMessage(SocketMessage.CommandType.SendMessage, eventName, message);
+
+                var buffer = Encoding.UTF8.GetBytes(socketMessage.Serialize());
                 var segment = new ArraySegment<byte>(buffer);
 
                 foreach (var subscriber in subscribers)
@@ -188,13 +189,8 @@ namespace WebsockServer
                     }
                 }
 
-                if (_verbose)
-                    ConsoleWrite($"Event message relayed to {subscribers.Count} subscribers.");
-            }
-            else
-            {
-                if (_verbose)
-                    ConsoleWrite($"Event '{eventName}' has no subscribers.");
+                if (_verbose && subscribers.Count > 1)
+                    ConsoleWrite($"Event message relayed to {subscribers.Count - 1} subscribers.");
             }
         }
 
