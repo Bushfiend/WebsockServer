@@ -40,6 +40,9 @@ namespace WebsockServer
 
         private async void AcceptConnections()
         {
+            if (cancellationToken == null || listener == null)
+                return;
+
             while (!cancellationToken.Token.IsCancellationRequested)
             {
                 var context = await listener.GetContextAsync();
@@ -108,8 +111,6 @@ namespace WebsockServer
                     }
                 }
             }
-
-
         }
 
         private void UnsubscribeDisconnectedClient(WebSocket webSocket)
