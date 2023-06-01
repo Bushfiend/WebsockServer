@@ -10,6 +10,10 @@ namespace WebsockServer
 {
     public class WebsocketServer
     {
+
+        //Jonah is a cuck.
+
+
         private HttpListener? listener;
         private CancellationTokenSource? cancellationToken;
         private Dictionary<string, List<WebSocket>>? eventSubscriptions;
@@ -56,7 +60,7 @@ namespace WebsockServer
 
             if(cancellationToken == null || listener == null)
             {
-                ConsoleWrite("Something went wrong. cancellationToken or listener are null.");
+                ConsoleWrite("Something went wrong. cancellationToken or listener didnt intialize.. why?.");
                 return;
             }
 
