@@ -32,6 +32,7 @@ namespace WebsockServer
             if (_verbose)
                 ConsoleWrite("Verbose Mode Enabled!");
 
+
             listener = new HttpListener();
 
             listener.Prefixes.Add(URL);
