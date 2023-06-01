@@ -59,7 +59,7 @@ namespace WebsockServer
 
             if(cancellationToken == null || listener == null)
             {
-                ConsoleWrite("Something went wrong. cancellationToken or listener are null.");
+                ConsoleWrite("Something went wrong. cancellationToken or listener didnt intialize.. why?.");
                 return;
             }
 

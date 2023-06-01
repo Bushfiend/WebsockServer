@@ -10,7 +10,6 @@ namespace WebsockServer
             var server = new WebsocketServer("http://172.26.6.77:9900/");
             await server.StartServerAsync();
 
-
             Console.WriteLine("Press Enter to stop the server...");
             Console.ReadLine();
 
