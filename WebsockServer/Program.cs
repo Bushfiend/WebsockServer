@@ -7,7 +7,7 @@ namespace WebsockServer
     {
         static async Task Main(string[] args)
         {
-            var server = new WebsocketServer("http://localhost:9900/");
+            var server = new WebsocketServer("http://172.26.6.77:9900/");
             await server.StartServerAsync();
 
 

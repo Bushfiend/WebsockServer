@@ -10,6 +10,10 @@ namespace WebsockServer
 {
     public class WebsocketServer
     {
+
+        //Jonah is a cuck.
+
+
         private HttpListener? listener;
         private CancellationTokenSource? cancellationToken;
         private Dictionary<string, List<WebSocket>>? eventSubscriptions;
